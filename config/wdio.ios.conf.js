@@ -1,7 +1,7 @@
 exports.config = {
     runner: 'local',
-    user: 'oauth-deepesh.raghuvanshi-6eb14',
-    key: 'bb85f856-bcec-46a3-8549-5cda26dfbae8',
+    user: SAUCE_LAB_USER,
+    key: SAUCE_LAB_ACCESS_KEY,
     region: 'eu',
 
     specs: ['./features/**/*.feature'],

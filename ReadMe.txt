@@ -16,6 +16,7 @@ Pre-Software Required:
 
 Step to Set Up this repo in Local:
    1. git clone https://github.com/deepeshraghu/wdio_assignment.git
+   2. Update user and key details in "wdio.conf.js" and "wdio.ios.conf.js" file with valid credential from Sauce lab account.
    2. npm init -y
    3. npm install @wdio/cli webdriverio appium @wdio/sauce-service @wdio/local-runner @wdio/cucumber-framework @wdio/spec-reporter @cucumber/cucumber @wdio/chai-assertion
 
