@@ -1,4 +1,3 @@
-// test/steps/login.steps.js
 import { openDeepLinkUrl, restartApp } from '../helpers/utils';
 import CatalogScreen from '../pageObjects/CatalogScreen';
 import Menu from '../pageObjects/Menu';

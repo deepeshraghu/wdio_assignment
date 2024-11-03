@@ -2,6 +2,15 @@
 Introduction:
    This Framework is created on to of Node.js using WebDriver IO module, Cucumber Framework, Sauce Lab service and JavaScript language.
 
+Folder Structure:
+   config => It contains wdio configuration .js file for Android and iOS execution.
+   feature/helpers => It contain below files:
+                           1. e2eConstants.js => which store test data
+                           2. gestures.js and utils.js => it contains reusable functions.
+   pageobjects => It contains page classes for application pages where script will interact with components.
+   step-definitions => It contains steps.js files which have implementation of feature file steps.
+   login.feature => It contain test cases defines in GIVEN, WHEN, THEN format using cucumber.
+
 Pre-Software Required:
    1. Node.js
    2. Intellij IDE
