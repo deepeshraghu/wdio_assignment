@@ -1,10 +1,10 @@
 exports.config = {
     runner: 'local',
-    user: SAUCE_LAB_USER,
-    key: SAUCE_LAB_ACCESS_KEY,
+    user: 'oauth-deepesh.raghuvanshi-379d1',
+    key: '656d3bf5-013d-4110-94f8-824906844c4c',
     region: 'eu',
 
-    specs: ['./features/**/*.feature'],
+    specs: ['../features/**/*.feature'],
     maxInstances: 10,
     capabilities: [{
         platformName: 'iOS',
@@ -22,7 +22,7 @@ exports.config = {
     services: ['sauce'],
     framework: 'cucumber',
     cucumberOpts: {
-        require: ['./features/step-definitions/steps.js'],
+        require: ['./step-definitions/steps.js'],
         backtrace: false,
         dryRun: false,
         failFast: false,

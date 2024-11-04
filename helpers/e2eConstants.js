@@ -1,4 +1,3 @@
-// helpers/e2eConstants.js
 export const LOGIN_USERS = {
   LOCKED: {
     username: 'alice@example.com',
