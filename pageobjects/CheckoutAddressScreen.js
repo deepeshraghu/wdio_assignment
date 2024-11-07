@@ -1,31 +1,34 @@
-class CheckoutAddressScreen {
+import AppScreen from './AppScreen';
+
+class CheckoutAddressScreen extends AppScreen {
+  constructor() {
+    super('~checkout address screen'); // Uses the selector for the checkout address screen
+  }
+
   /**
    * Waits for the checkout address screen to be displayed.
    *
-   * This method will pause execution until the element representing the
-   * checkout address screen is displayed on the screen. It is useful
-   * for ensuring that the screen is visible before performing any actions
-   * that depend on it being shown.
+   * This method pauses execution until the checkout address screen
+   * element is visible, ensuring that interactions can proceed.
    *
    * @async
-   * @returns {Promise<void>} - A promise that resolves when the element is displayed.
+   * @returns {Promise<void>} - A promise that resolves when the screen is displayed.
    */
   async waitForIsShown() {
-    await $('~checkout address screen').waitForDisplayed(); // Waits until the element is displayed
+    await $(this.selector).waitForDisplayed();
   }
 
   /**
    * Checks if the checkout address screen is currently displayed.
    *
-   * This method returns a boolean indicating whether the checkout address
-   * screen is visible on the screen. It can be used to verify the screen's
-   * visibility before proceeding with any operations.
+   * This method returns a boolean indicating the visibility state of
+   * the checkout address screen.
    *
    * @async
-   * @returns {Promise<boolean>} - A promise that resolves to true if the element is displayed, otherwise false.
+   * @returns {Promise<boolean>} - Resolves to `true` if the screen is displayed, `false` otherwise.
    */
   async isShown() {
-    return $('~checkout address screen').isDisplayed(); // Returns the display status of the element
+    return $(this.selector).isDisplayed();
   }
 }
 

@@ -1,6 +1,18 @@
+import AppScreen from './AppScreen';
 import { getTextOfElement, locatorStrategy } from '../helpers/utils';
 
-class LoginScreen {
+/**
+ * Represents the Login Screen of the application.
+ * Extends the AppScreen class to inherit common screen functionalities.
+ */
+class LoginScreen extends AppScreen {
+  /**
+   * Initializes the LoginScreen with its specific selector.
+   */
+  constructor() {
+    super('~login screen'); // Update the selector to match the main element of the Login Screen
+  }
+
   /**
    * Gets the username input field element.
    *
@@ -90,29 +102,29 @@ class LoginScreen {
   }
 
   /**
-   * Waits for the username field to be displayed on the screen.
+   * Waits for the login screen to be displayed.
    *
-   * This method pauses execution until the username input field is visible,
+   * This method pauses execution until the login screen is visible,
    * ensuring that it is ready for user interaction.
    *
    * @async
-   * @returns {Promise<void>} A promise that resolves when the username field is displayed.
+   * @returns {Promise<void>} A promise that resolves when the login screen is displayed.
    */
   async waitForIsShown() {
-    await this.usernameField.waitForDisplayed(); // Wait until the username field is displayed
+    await super.waitForIsShown(); // Utilize the inherited method from AppScreen
   }
 
   /**
-   * Checks if the username field is currently displayed on the screen.
+   * Checks if the login screen is currently displayed on the screen.
    *
-   * This method returns a boolean indicating whether the username input field
-   * is visible, allowing for validation of the login screen's state.
+   * This method returns a boolean indicating whether the login screen is visible,
+   * allowing for validation of the screen's state.
    *
    * @async
-   * @returns {Promise<boolean>} A promise that resolves to true if the username field is displayed, otherwise false.
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the login screen is displayed, otherwise `false`.
    */
   async isShown() {
-    return this.usernameField.isDisplayed(); // Check if the username field is displayed
+    return await super.isShown(); // Utilize the inherited method from AppScreen
   }
 }
 
