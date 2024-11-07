@@ -1,6 +1,5 @@
 import AppScreen from './AppScreen';
-import { getTextOfElement, locatorStrategy } from '../helpers/utils';
-import { findElementBySwipe } from '../helpers/gestures';
+import { getTextOfElement, locatorStrategy, findElementBySwipe, swipe } from '../helpers/utils';
 
 /**
  * Represents the Menu screen of the application.
@@ -8,10 +7,9 @@ import { findElementBySwipe } from '../helpers/gestures';
  */
 class Menu extends AppScreen {
   constructor() {
-    super(locatorStrategy('menu item catalog')); // Initialize with drawer container locator
+    super(locatorStrategy('menu item catalog'));
   }
 
-  // Locators
   get drawerContainer() {
     return $(locatorStrategy('menu item catalog'));
   }
@@ -53,7 +51,7 @@ class Menu extends AppScreen {
       scrollableElement: await this.drawerContainer,
     }))?.click();
 
-    await this.confirmLogout(); // Call helper method to confirm logout
+    await this.confirmLogout();
   }
 
   /**
@@ -75,7 +73,7 @@ class Menu extends AppScreen {
     await okButton.waitForDisplayed();
     await okButton.click();
 
-    await driver.pause(750); // Brief pause for logout animation
+    await driver.pause(750);
   }
 
   /**
@@ -86,7 +84,7 @@ class Menu extends AppScreen {
    */
   async openMenu() {
     await this.openMenuButton.click();
-    await driver.pause(750); // Brief pause to allow the menu to open
+    await driver.pause(750);
   }
 }
 

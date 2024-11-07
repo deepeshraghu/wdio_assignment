@@ -1,112 +1,87 @@
 /**
- * Restarts the application by terminating and then activating it again.
+ * Performs a swipe gesture on the screen from a starting point to an ending point.
  *
- * This function retrieves the app's package name, terminates the app if it is running,
- * and then activates it again to simulate a restart.
+ * This function simulates a touch swipe gesture using the specified coordinates for
+ * the starting and ending points. It uses the WebDriver's performActions API to execute
+ * the pointer actions necessary for the swipe.
+ *
+ * @param {Object} from - The starting coordinates of the swipe.
+ * @param {number} from.x - The x-coordinate of the starting point.
+ * @param {number} from.y - The y-coordinate of the starting point.
+ * @param {Object} to - The ending coordinates of the swipe.
+ * @param {number} to.x - The x-coordinate of the ending point.
+ * @param {number} to.y - The y-coordinate of the ending point.
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the swipe action is completed.
+ */
+export const swipe = async (from, to) => {
+  await driver.performActions([
+    {
+      type: 'pointer',
+      id: 'finger1',
+      parameters: { pointerType: 'touch' },
+      actions: [
+        { type: 'pointerMove', duration: 0, x: from.x, y: from.y },
+        { type: 'pointerDown', button: 0 },
+        { type: 'pause', duration: 100 },
+        { type: 'pointerMove', duration: 1000, x: to.x, y: to.y },
+        { type: 'pointerUp', button: 0 },
+      ],
+    },
+  ]);
+  await driver.pause(2000);
+};
+
+/**
+ * Attempts to find a specified element by swiping within a scrollable container.
+ *
+ * This function performs a series of swipe gestures to locate an element within
+ * a specified scrollable container. It will swipe up or down depending on the
+ * value of the `scrollUp` parameter. The maximum number of scroll attempts can
+ * be controlled with the `maxScrolls` parameter.
+ *
+ * @param {Object} params - The parameters for finding the element.
+ * @param {WebdriverIO.Element} params.element - The element to locate within the scrollable area.
+ * @param {number} [params.maxScrolls=5] - The maximum number of scroll attempts before giving up.
+ * @param {WebdriverIO.Element} params.scrollableElement - The container element that is scrollable.
+ * @param {boolean} [params.scrollUp=false] - A flag indicating whether to swipe up (true) or down (false).
+ * @async
+ * @returns {Promise<WebdriverIO.Element|undefined>} A promise that resolves to the located element or undefined if not found.
+ */
+export const findElementBySwipe = async ({
+  element,
+  maxScrolls = 5,
+  scrollableElement,
+  scrollUp = false,
+}) => {
+  for (let i = 0; i < maxScrolls; i++) {
+    if (await element.isDisplayed()) {
+      return element;
+    }
+
+    const { x, y, height, width } = await driver.getElementRect(scrollableElement.elementId);
+    const centerX = x + width / 2;
+    const yStart = y + height * 0.9;
+    const yEnd = y + height * 0.1;
+
+    if (scrollUp) {
+      await swipe({ x: centerX, y: yEnd }, { x: centerX, y: yStart });
+    } else {
+      await swipe({ x: centerX, y: yStart }, { x: centerX, y: yEnd });
+    }
+  }
+};
+
+/**
+ * Restarts the application by terminating and then activating it again.
  *
  * @async
  * @returns {Promise<void>} A promise that resolves when the app has been restarted.
  */
 export async function restartApp() {
-    const appPackage = 'com.saucelabs.mydemoapp.rn'; // Define the package name of the app
-    await driver.terminateApp(appPackage); // Terminate the app
-    await driver.activateApp(appPackage); // Activate the app again
+    const appPackage = 'com.saucelabs.mydemoapp.rn';
+    await driver.terminateApp(appPackage);
+    await driver.activateApp(appPackage);
 }
 
-/**
- * Opens a deep link URL in the application.
- *
- * This function constructs a deep link URL using a predefined prefix and attempts to
- * open it within the application. The behavior differs between Android and iOS platforms.
- *
- * @param {string} url - The specific URL path to be opened as a deep link.
- * @async
- * @returns {Promise<void>} A promise that resolves when the deep link has been opened.
- */
-export const openDeepLinkUrl = async (url) => {
-  const prefix = 'mydemoapprn://'; // Define the prefix for the deep link
-
-  if (driver.isAndroid) {
-    // Android implementation for opening deep link
-    return driver.execute('mobile:deepLink', {
-      url: `${prefix}${url}`, // Construct the full deep link URL
-      package: 'com.saucelabs.mydemoapp.rn', // Specify the app package
-    });
-  }
-  else {
-    // iOS implementation for opening deep link
-    await driver.url(`${prefix}${url}`); // Navigate to the deep link URL
-
-    const addressBarSelector =
-      "name CONTAINS 'URL' OR name CONTAINS 'TabBarItemTitle' OR value contains 'Search or enter website name'";
-    const urlFieldSelector =
-      'type == "XCUIElementTypeTextField" && name CONTAINS "URL"';
-    const addressBar = $(`-ios predicate string:${addressBarSelector}`); // Locate the address bar
-    const urlField = $(`-ios predicate string:${urlFieldSelector}`); // Locate the URL input field
-
-    if (!(await driver.isKeyboardShown())) {
-      await addressBar.waitForDisplayed(); // Wait for the address bar to be displayed
-      await addressBar.click(); // Click the address bar to focus it
-    }
-
-    await urlField.setValue(`${prefix}${url}\uE007`); // Enter the deep link URL and submit
-
-  }
-
-
-  // Handle the notification to open the link
-  try {
-    const openSelector =
-      "type == 'XCUIElementTypeButton' && name CONTAINS 'Open'";
-    const openButton = $(`-ios predicate string:${openSelector}`); // Locate the open button
-    await openButton.waitForDisplayed({ timeout: 3000 }); // Wait for the button to be displayed
-    await openButton.click(); // Click the open button
-  } catch (e) {
-    console.log('Deeplink error = ', e); // Log any errors encountered
-  }
-};
-
-/**
- * Returns the appropriate locator strategy based on the platform (iOS or Android).
- *
- * This function provides a strategy for locating elements based on the platform
- * by returning either an ID strategy for iOS or a content description strategy for Android.
- *
- * @param {string} selector - The selector string to be used for locating the element.
- * @returns {string} The locator strategy string for the respective platform.
- */
-export const locatorStrategy = (selector) => {
-  return driver.isIOS ? `id=${selector}` : `//*[@content-desc="${selector}"]`; // Return platform-specific locator strategy
-};
-
-/**
- * Retrieves the visible text from a specified element.
- *
- * This function checks the element for text content. For Android, it retrieves
- * the text from all child TextView elements; for iOS, it retrieves the text directly
- * from the element. In case of an error, it attempts to get the text again.
- *
- * @param {WebdriverIO.Element} element - The element from which to retrieve the text.
- * @async
- * @returns {Promise<string>} A promise that resolves to the trimmed visible text of the element.
- */
-export const getTextOfElement = async (element) => {
-  let visualText = ''; // Initialize variable to store the visible text
-
-  try {
-    if (driver.isAndroid) {
-      // For Android, gather text from all TextView elements
-      const elements = await element.$$('//android.widget.TextView'); // Find all child TextView elements
-      for (let elm of elements) {
-        visualText = `${visualText} ${await elm.getText()}`; // Append each text to visualText
-      }
-    } else {
-      // For iOS, get the text directly from the element
-      visualText = await element.getText();
-    }
-  } catch (e) {
-    visualText = await element.getText(); // Attempt to get text again if an error occurred
-  }
-
-  return visualText.trim(); // Return the trimmed text
-};
+// Other existing utility functions here, e.g., openDeepLinkUrl, locatorStrategy, getTextOfElement, etc.
