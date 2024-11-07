@@ -1,36 +1,3 @@
-/**
- * Performs a swipe gesture on the screen from a starting point to an ending point.
- *
- * This function simulates a touch swipe gesture using the specified coordinates for
- * the starting and ending points. It uses the WebDriver's performActions API to execute
- * the pointer actions necessary for the swipe.
- *
- * @param {Object} from - The starting coordinates of the swipe.
- * @param {number} from.x - The x-coordinate of the starting point.
- * @param {number} from.y - The y-coordinate of the starting point.
- * @param {Object} to - The ending coordinates of the swipe.
- * @param {number} to.x - The x-coordinate of the ending point.
- * @param {number} to.y - The y-coordinate of the ending point.
- * @async
- * @returns {Promise<void>} A promise that resolves when the swipe action is completed.
- */
-export const swipe = async (from, to) => {
-  await driver.performActions([
-    {
-      type: 'pointer',
-      id: 'finger1',
-      parameters: { pointerType: 'touch' },
-      actions: [
-        { type: 'pointerMove', duration: 0, x: from.x, y: from.y },
-        { type: 'pointerDown', button: 0 },
-        { type: 'pause', duration: 100 },
-        { type: 'pointerMove', duration: 1000, x: to.x, y: to.y },
-        { type: 'pointerUp', button: 0 },
-      ],
-    },
-  ]);
-  await driver.pause(2000);
-};
 
 /**
  * Attempts to find a specified element by swiping within a scrollable container.
