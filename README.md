@@ -13,7 +13,7 @@ This framework is built on top of Node.js using the WebDriverIO module, Cucumber
 - **helpers**  
   Contains utility files:
     - `e2eConstants.js` - Stores test data.
-    - `gestures.js` and `utils.js` - Contains reusable functions.
+    - `utils.js` - Contains reusable functions.
 
 - **pageobjects**  
   Contains page classes for application pages, where scripts interact with UI components.
