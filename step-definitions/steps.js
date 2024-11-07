@@ -44,7 +44,8 @@ When('I login through autofill', async () => {
 // Step to log out of the application
 When('I logout', async () => {
   await Menu.openMenu(); // Opens the menu
-  await Menu.logout(); // Selects the logout option
+  await Menu.logout();   // Selects the logout option
+  await Menu.confirmLogout(); //Verify logout confirmation
 });
 
 // Step to verify the checkout address screen is displayed
