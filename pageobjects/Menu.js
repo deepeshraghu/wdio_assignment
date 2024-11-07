@@ -55,28 +55,6 @@ class Menu extends AppScreen {
   }
 
   /**
-   * Helper function to confirm logout on both iOS and Android.
-   *
-   * @async
-   * @returns {Promise<void>} - A promise that resolves when the confirmation process is complete.
-   */
-  async confirmLogout() {
-    const iosSelector = (text) => `-ios class chain:**/XCUIElementTypeButton[\`label == "${text}"\`]`;
-    const androidSelector = (text) => `//android.widget.Button[contains(@text,'${text}')]`;
-
-    const logOutButton = $(driver.isIOS ? iosSelector('Log Out') : androidSelector('LOG OUT'));
-    const okButton = $(driver.isIOS ? iosSelector('OK') : androidSelector('OK'));
-
-    await logOutButton.waitForDisplayed();
-    await logOutButton.click();
-
-    await okButton.waitForDisplayed();
-    await okButton.click();
-
-    await driver.pause(750);
-  }
-
-  /**
    * Opens the menu by clicking the open menu button.
    *
    * @async

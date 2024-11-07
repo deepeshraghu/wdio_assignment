@@ -9,91 +9,83 @@ import { Given, When, Then } from '@wdio/cucumber-framework';
 
 // Step to restart the app before starting a test
 Given('the app is restarted', async () => {
-  await restartApp(); // Resets the app session
+  await restartApp();
 });
 
 // Step to verify the user is on the catalog screen
 Given('I am on the catalog screen', async () => {
-  await CatalogScreen.waitForIsShown(); // Waits for the catalog screen to be displayed
+  await CatalogScreen.waitForIsShown();
 });
 
 // Step to navigate to the login screen using a deep link
 When('I navigate to the login screen', async () => {
-  if(driver.isAndroid){
-  await openDeepLinkUrl('login'); // Opens the login screen via a deep link URL
+  if (driver.isAndroid) {
+    await openDeepLinkUrl('login');
+  } else {
+    await Menu.openMenu();
+    await Menu.openLogin();
   }
-  else{
-   await Menu.openMenu(); // Opens the menu
-   await Menu.openLogin();   //Click on LogIn
-  }
-  await LoginScreen.waitForIsShown(); // Waits for the login screen to be visible
+  await LoginScreen.waitForIsShown();
 });
 
 // Step to log in with valid credentials
 When('I login with valid credentials', async () => {
-  await LoginScreen.submitLogin(LOGIN_USERS.STANDARD); // Submits login with standard valid user
-  await CheckoutAddressScreen.waitForIsShown(); // Waits for the checkout address screen to show after login
+  await LoginScreen.submitLogin(LOGIN_USERS.STANDARD);
+  await CheckoutAddressScreen.waitForIsShown();
 });
 
 // Step to log in using autofill credentials
 When('I login through autofill', async () => {
-  await LoginScreen.submitLoginWithAutofill(true); // Uses autofill to log in
-  await CheckoutAddressScreen.waitForIsShown(); // Waits for the checkout address screen to confirm successful login
+  await LoginScreen.submitLoginWithAutofill(true);
+  await CheckoutAddressScreen.waitForIsShown();
 });
 
 // Step to log out of the application
 When('I logout', async () => {
-  await Menu.openMenu(); // Opens the menu
-  await Menu.logout();   // Selects the logout option
-  await Menu.confirmLogout(); //Verify logout confirmation
+  await Menu.openMenu();
+  await Menu.logout();
 });
 
 // Step to verify the checkout address screen is displayed
 Then('I should see the checkout address screen', async () => {
-  expect(await CheckoutAddressScreen.isShown()).to.be.true; // Asserts the checkout address screen is displayed
+  expect(await CheckoutAddressScreen.isShown()).to.be.true;
 });
 
 // Step to verify the login screen is displayed after logout or navigation
 Then('I should see the login screen', async () => {
-  await LoginScreen.waitForIsShown(); // Waits for the login screen to appear
-  expect(await LoginScreen.isShown()).to.be.true; // Asserts the login screen is visible
+  await LoginScreen.waitForIsShown();
+  expect(await LoginScreen.isShown()).to.be.true;
 });
 
 // Step to handle various login scenarios based on username and password input
 When(/^I login with (.+) and (.+)$/, async (username, password) => {
-  // Handles specific cases based on the given username and password values
-  if (username === "NO_USER_DETAILS") {
-    await LoginScreen.submitLogin(LOGIN_USERS.NO_USER_DETAILS); // Login without username
-  } else if (password === "NO_PASSWORD") {
-    await LoginScreen.submitLogin(LOGIN_USERS.NO_PASSWORD); // Login without password
-  } else if (username === "invalidUser") {
-    await LoginScreen.submitLogin(LOGIN_USERS.NO_MATCH); // Login with invalid credentials
-  } else if (username === "lockedUser") {
-    await LoginScreen.submitLogin(LOGIN_USERS.LOCKED); // Login with locked-out user credentials
-  } else {
-    // Generic login with provided username and password for other cases
-    await LoginScreen.enterUsername(username); // Enters the specified username
-    await LoginScreen.enterPassword(password); // Enters the specified password
-    await LoginScreen.submitLogin(); // Submits login with the provided credentials
+  switch (true) {
+    case username === 'NO_USER_DETAILS':
+      await LoginScreen.submitLogin(LOGIN_USERS.NO_USER_DETAILS);
+      break;
+    case password === 'NO_PASSWORD':
+      await LoginScreen.submitLogin(LOGIN_USERS.NO_PASSWORD);
+      break;
+    case username === 'invalidUser':
+      await LoginScreen.submitLogin(LOGIN_USERS.NO_MATCH);
+      break;
+    case username === 'lockedUser':
+      await LoginScreen.submitLogin(LOGIN_USERS.LOCKED);
+      break;
+    default:
+      await LoginScreen.enterUsername(username);
+      await LoginScreen.enterPassword(password);
+      await LoginScreen.submitLogin();
   }
 });
 
 // Step to verify that the correct error message is displayed for a specified field
 Then(/^I should see the error message "([^"]+)" for "([^"]+)"$/, async (errorMessage, field) => {
-  let actualMessage;
+  const actualMessage = await (field === 'username'
+    ? LoginScreen.getUsernameErrorMessage()
+    : field === 'password'
+    ? LoginScreen.getPasswordErrorMessage()
+    : LoginScreen.getGenericErrorMessage());
 
-  // Selects the error message based on the field: username, password, or a generic message
-  switch (field) {
-    case 'username':
-      actualMessage = await LoginScreen.getUsernameErrorMessage(); // Gets the username error message
-      break;
-    case 'password':
-      actualMessage = await LoginScreen.getPasswordErrorMessage(); // Gets the password error message
-      break;
-    default:
-      actualMessage = await LoginScreen.getGenericErrorMessage(); // Gets a general error message
-  }
-
-  // Asserts that the actual error message matches the expected message
   expect(actualMessage).to.equal(errorMessage);
 });
