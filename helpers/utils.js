@@ -1,36 +1,3 @@
-/**
- * Performs a swipe gesture on the screen from a starting point to an ending point.
- *
- * This function simulates a touch swipe gesture using the specified coordinates for
- * the starting and ending points. It uses the WebDriver's performActions API to execute
- * the pointer actions necessary for the swipe.
- *
- * @param {Object} from - The starting coordinates of the swipe.
- * @param {number} from.x - The x-coordinate of the starting point.
- * @param {number} from.y - The y-coordinate of the starting point.
- * @param {Object} to - The ending coordinates of the swipe.
- * @param {number} to.x - The x-coordinate of the ending point.
- * @param {number} to.y - The y-coordinate of the ending point.
- * @async
- * @returns {Promise<void>} A promise that resolves when the swipe action is completed.
- */
-export const swipe = async (from, to) => {
-  await driver.performActions([
-    {
-      type: 'pointer',
-      id: 'finger1',
-      parameters: { pointerType: 'touch' },
-      actions: [
-        { type: 'pointerMove', duration: 0, x: from.x, y: from.y },
-        { type: 'pointerDown', button: 0 },
-        { type: 'pause', duration: 100 },
-        { type: 'pointerMove', duration: 1000, x: to.x, y: to.y },
-        { type: 'pointerUp', button: 0 },
-      ],
-    },
-  ]);
-  await driver.pause(2000);
-};
 
 /**
  * Attempts to find a specified element by swiping within a scrollable container.
@@ -84,4 +51,36 @@ export async function restartApp() {
     await driver.activateApp(appPackage);
 }
 
-// Other existing utility functions here, e.g., openDeepLinkUrl, locatorStrategy, getTextOfElement, etc.
+
+/**
+ * Opens a deep link URL within the application.
+ *
+ * This function constructs a deep link using a predefined prefix and opens it within the app.
+ * The method uses the WebDriverIO `execute` command with `mobile:deepLink`, which allows
+ * deep linking directly into mobile applications, typically used in mobile testing environments.
+ *
+ * @param {string} url - The specific path or route within the app to be appended to the base deep link URL.
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the deep link action is completed.
+ */
+export const openDeepLinkUrl = async (url) => {
+  const prefix = 'mydemoapprn://'; // Define the prefix for the deep link
+  return driver.execute('mobile:deepLink', {
+      url: ${prefix}${url}, // Construct the full deep link URL
+      package: 'com.saucelabs.mydemoapp.rn', // Specify the app package
+    });
+
+};
+
+/**
+ * Returns the appropriate locator strategy based on the platform (iOS or Android).
+ *
+ * This function provides a strategy for locating elements based on the platform
+ * by returning either an ID strategy for iOS or a content description strategy for Android.
+ *
+ * @param {string} selector - The selector string to be used for locating the element.
+ * @returns {string} The locator strategy string for the respective platform.
+ */
+export const locatorStrategy = (selector) => {
+  return driver.isIOS ? id=${selector} : //*[@content-desc="${selector}"]; // Return platform-specific locator strategy
+};

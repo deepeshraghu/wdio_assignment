@@ -5,18 +5,6 @@ class CheckoutAddressScreen extends AppScreen {
     super('~checkout address screen'); // Uses the selector for the checkout address screen
   }
 
-  /**
-   * Waits for the checkout address screen to be displayed.
-   *
-   * This method pauses execution until the checkout address screen
-   * element is visible, ensuring that interactions can proceed.
-   *
-   * @async
-   * @returns {Promise<void>} - A promise that resolves when the screen is displayed.
-   */
-  async waitForIsShown() {
-    await $(this.selector).waitForDisplayed();
-  }
 
   /**
    * Checks if the checkout address screen is currently displayed.

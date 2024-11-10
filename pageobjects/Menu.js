@@ -1,5 +1,5 @@
 import AppScreen from './AppScreen';
-import { getTextOfElement, locatorStrategy, findElementBySwipe, swipe } from '../helpers/utils';
+import { getTextOfElement, locatorStrategy, findElementBySwipe } from '../helpers/utils';
 
 /**
  * Represents the Menu screen of the application.
@@ -32,7 +32,7 @@ class Menu extends AppScreen {
    * @async
    * @returns {Promise<void>} - A promise that resolves when the login screen is opened.
    */
-  async openLogin() {
+      async openLogin() {
     await (await findElementBySwipe({
       element: await this.loginButton,
       scrollableElement: await this.drawerContainer,
@@ -62,7 +62,6 @@ class Menu extends AppScreen {
    */
   async openMenu() {
     await this.openMenuButton.click();
-    await driver.pause(750);
   }
 }
 

@@ -102,19 +102,6 @@ class LoginScreen extends AppScreen {
   }
 
   /**
-   * Waits for the login screen to be displayed.
-   *
-   * This method pauses execution until the login screen is visible,
-   * ensuring that it is ready for user interaction.
-   *
-   * @async
-   * @returns {Promise<void>} A promise that resolves when the login screen is displayed.
-   */
-  async waitForIsShown() {
-    await super.waitForIsShown(); // Utilize the inherited method from AppScreen
-  }
-
-  /**
    * Checks if the login screen is currently displayed on the screen.
    *
    * This method returns a boolean indicating whether the login screen is visible,

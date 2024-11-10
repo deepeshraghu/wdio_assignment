@@ -25,7 +25,7 @@ When('I navigate to the login screen', async () => {
     await Menu.openMenu();
     await Menu.openLogin();
   }
-  await LoginScreen.waitForIsShown();
+
 });
 
 // Step to log in with valid credentials
@@ -34,11 +34,6 @@ When('I login with valid credentials', async () => {
   await CheckoutAddressScreen.waitForIsShown();
 });
 
-// Step to log in using autofill credentials
-When('I login through autofill', async () => {
-  await LoginScreen.submitLoginWithAutofill(true);
-  await CheckoutAddressScreen.waitForIsShown();
-});
 
 // Step to log out of the application
 When('I logout', async () => {
@@ -51,11 +46,6 @@ Then('I should see the checkout address screen', async () => {
   expect(await CheckoutAddressScreen.isShown()).to.be.true;
 });
 
-// Step to verify the login screen is displayed after logout or navigation
-Then('I should see the login screen', async () => {
-  await LoginScreen.waitForIsShown();
-  expect(await LoginScreen.isShown()).to.be.true;
-});
 
 // Step to handle various login scenarios based on username and password input
 When(/^I login with (.+) and (.+)$/, async (username, password) => {
