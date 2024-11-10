@@ -64,13 +64,15 @@ export async function restartApp() {
  * @returns {Promise<void>} A promise that resolves when the deep link action is completed.
  */
 export const openDeepLinkUrl = async (url) => {
-  const prefix = 'mydemoapprn://'; // Define the prefix for the deep link
+  const prefix = 'mydemoapprn://';
+  const fullUrl = `${prefix}${url}`;
   return driver.execute('mobile:deepLink', {
-      url: ${prefix}${url}, // Construct the full deep link URL
-      package: 'com.saucelabs.mydemoapp.rn', // Specify the app package
-    });
-
+    url: fullUrl, // Use the constructed URL
+    package: 'com.saucelabs.mydemoapp.rn',
+  });
 };
+
+
 
 /**
  * Returns the appropriate locator strategy based on the platform (iOS or Android).
@@ -82,5 +84,5 @@ export const openDeepLinkUrl = async (url) => {
  * @returns {string} The locator strategy string for the respective platform.
  */
 export const locatorStrategy = (selector) => {
-  return driver.isIOS ? id=${selector} : //*[@content-desc="${selector}"]; // Return platform-specific locator strategy
+  return driver.isIOS ? `id=${selector}` : `//*[@content-desc="${selector}"]`;
 };
